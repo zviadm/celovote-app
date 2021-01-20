@@ -25,6 +25,8 @@ import RewardsTab from './rewards';
 import LinkText from './link-text';
 import TransfersTab from './transfers';
 
+const githubLogo = require('../static/Github-Mark-64px.png')
+
 const walletsKey = "app/wallets"
 
 const qAddresses = gql`
@@ -212,6 +214,7 @@ export default function App(props: {location: string}) {
         display: "flex",
         flexDirection: "row",
         justifyContent: "flex-end",
+        alignItems: "center",
         }}>
         <Box p={2}>
           <Typography variant="subtitle2" color="textSecondary" gutterBottom>
@@ -219,6 +222,11 @@ export default function App(props: {location: string}) {
             <LinkText href="mailto:support@celovote.com" text="support@celovote.com" />
           </Typography>
         </Box>
+        <div style={{paddingBottom: 5, paddingRight: 10}}>
+        <Link
+          href="https://github.com/zviadm/celovote-app"
+          target="_blank" rel="noreferrer"><img src={githubLogo} alt="GitHub" width={32} /></Link>
+        </div>
       </div>
       <Snackbar
         open={error ? true : false}
