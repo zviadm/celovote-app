@@ -1,0 +1,13 @@
+runtime: python27
+api_version: 1
+threadsafe: true
+service: celovote-app
+
+handlers:
+- url: /static
+  static_dir: static_out
+
+- url: /(.*)
+  static_files: static_out/index.html
+  upload: static_out/index.html
+  expiration: 1m
