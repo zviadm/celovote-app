@@ -5,6 +5,7 @@
   "scripts": {
     "test": "npx eslint src/**/*.ts* && npx tsc",
     "dev": "cross-env NODE_ENV=development parcel index.html --https",
+    "prod": "cross-env NODE_ENV=production parcel index.html --https",
     "build": "cross-env NODE_ENV=production parcel build index.html --no-cache --out-dir ./static_out --public-url /static",
     "deploy": "npm run test && rm -rf ./static_out/ && npm run build && gcloud -q app deploy"
   },
