@@ -19,7 +19,7 @@ import Box from '@material-ui/core/Box'
 import UnlockLedgerInfo from './unlock-ledger-info'
 
 import { WalletAddress, celoPathIdx, LedgerKit, useLedgerKit } from './ledger'
-import { EIP712TypedData, EIP712Object, generateTypedDataHash } from '@celo/contractkit/lib/utils/sign-typed-data-utils'
+import { EIP712TypedData, EIP712Object } from '@celo/utils/lib/sign-typed-data-utils'
 import { ProxyGovernanceMessage, Address, ProxyGovernanceAction, GovernanceProposals, IsDev, QueuedProposal, VotingProposal } from './schema'
 import { gql, NetworkStatus } from 'apollo-boost'
 import { useMutation, useQuery } from '@apollo/react-hooks'

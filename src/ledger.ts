@@ -1,7 +1,7 @@
 import TransportUSB from '@ledgerhq/hw-transport-webusb'
 import TransportU2F from '@ledgerhq/hw-transport-u2f'
 import { ContractKit, newKit } from '@celo/contractkit'
-import { LedgerWallet, newLedgerWalletWithSetup, AddressValidation } from '@celo/contractkit/lib/wallets/ledger-wallet'
+import { LedgerWallet, newLedgerWalletWithSetup, AddressValidation } from '@celo/wallet-ledger'
 import { celoURI } from './schema'
 import { useState, useEffect } from 'react'
 
