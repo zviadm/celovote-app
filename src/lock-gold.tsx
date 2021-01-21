@@ -181,7 +181,7 @@ async function updateLockedGold(
         await tx.sendAndWaitForReceipt()
       } else {
         const tx = lockedGold.lock()
-        await tx.sendAndWaitForReceipt({ value: toLock.toFixed() } as any)
+        await tx.sendAndWaitForReceipt({value: toLock.toFixed()})
       }
     }
   } else if (delta.lt(0)) {
