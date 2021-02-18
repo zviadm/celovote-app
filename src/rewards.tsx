@@ -180,6 +180,7 @@ export function RewardsView(props: {
       return [mainRow].concat(epochRows)
   }))
 
+  const addressesToFetch = addressesAll.filter((a) => !unchecked[a.address]).map((a) => a.address)
   return (
     <div>
       <div style={{display: "flex", flexDirection: "row"}}>
@@ -225,11 +226,8 @@ export function RewardsView(props: {
             <Button
               variant="contained" size="small"
               color="primary"
-              onClick={ () => {
-                const addressesToFetch = addressesAll.filter((a) => !unchecked[a.address]).map((a) => a.address)
-                fetchRewards({variables: {addresses: addressesToFetch}})
-              }}
-              disabled={loading}
+              onClick={ () => { fetchRewards({variables: {addresses: addressesToFetch}}) }}
+              disabled={loading || addressesToFetch.length === 0}
             >
               Show Rewards
             </Button>
