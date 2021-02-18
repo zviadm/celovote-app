@@ -8,6 +8,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import App from './src/app'
 import Faq from "./src/faq";
 import Scores from "./src/scores";
+import RewardsOnly from "./src/rewardsonly";
 import ApolloClient from 'apollo-boost';
 import { ApolloProvider } from '@apollo/react-hooks';
 import { celovoteGQL } from "./src/schema";
@@ -21,6 +22,7 @@ const Index = () => {
         <Switch>
           <Route component={Faq} path="/faq" />
           <Route component={Scores} path="/scores" />
+          <Route component={RewardsOnly} path="/rewards" />
           <Route component={App} path="/" />
         </Switch>
       </Router>

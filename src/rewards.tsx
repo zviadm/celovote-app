@@ -20,6 +20,7 @@ import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import Typography from '@material-ui/core/Typography'
 import LinkText from './link-text'
 import { Collapse } from '@material-ui/core'
+import BigNumber from 'bignumber.js'
 
 const qAddressRewards = gql`
   query addressRewards($addresses: [String!]!) {
@@ -40,6 +41,37 @@ export default function RewardsTab(props: {
   addressesHook: QueryResult<any, {addresses: string[]}>,
   onError: (error: Error) => void
 }) {
+  let addressesAll: BaseAddress[] = []
+  if (props.addressesHook.data) {
+    const addresses: Address[] = props.addressesHook.data.addresses
+    addressesAll = (addresses as BaseAddress[]).concat(...addresses.map((a) => a.rgContracts))
+    addressesAll.sort((a, b) => b.lockedGold - a.lockedGold)
+  }
+
+  return (
+    <div>
+      {(props.addressesHook.networkStatus === NetworkStatus.loading || props.addressesHook.networkStatus === NetworkStatus.refetch) &&
+      <LinearProgress color="primary" />}
+      {addressesAll.length > 0 &&
+      <RewardsView
+        addressesAll={addressesAll}
+        persistSelects={true}
+        showLockedGold={true}
+        showHelp={false}
+        onError={props.onError}
+      />}
+    </div>
+  )
+}
+
+export function RewardsView(props: {
+  addressesAll: {address: string, lockedGold?: number}[],
+  showLockedGold: boolean,
+  showHelp: boolean,
+  persistSelects: boolean,
+  onError: (error: Error) => void
+}) {
+  const addressesAll = props.addressesAll
   const [ fetchRewards, { called, loading, data } ] = useLazyQuery(
     qAddressRewards,
     {
@@ -48,7 +80,11 @@ export default function RewardsTab(props: {
     })
   const [ unchecked, _setUnchecked ] = useState<{[address: string]: boolean | undefined}>({})
   const [ sectionsOpen, _setSectionsOpen ] = useState<{[section: string]: boolean | undefined}>({})
+  const persistSelects = props.persistSelects
   useEffect(() => {
+    if (!persistSelects) {
+      return
+    }
     const uncheckedJSON = localStorage.getItem(uncheckedKey)
     if (uncheckedJSON) {
       _setUnchecked(JSON.parse(uncheckedJSON))
@@ -57,21 +93,21 @@ export default function RewardsTab(props: {
     if (sectionsOpenJSON) {
       _setSectionsOpen(JSON.parse(sectionsOpenJSON))
     }
-  }, [])
+  }, [persistSelects])
+
   const setUnchecked = (v: {[address: string]: boolean | undefined}) => {
     _setUnchecked(v)
-    localStorage.setItem(uncheckedKey, JSON.stringify(v))
+    if (persistSelects) {
+      localStorage.setItem(uncheckedKey, JSON.stringify(v))
+    }
   }
   const setSectionsOpen = (v: {[section: string]: boolean | undefined}) => {
     _setSectionsOpen(v)
-    localStorage.setItem(sectionsOpenKey, JSON.stringify(v))
+    if (persistSelects) {
+      localStorage.setItem(sectionsOpenKey, JSON.stringify(v))
+    }
   }
-  let addressesAll: BaseAddress[] = []
-  if (props.addressesHook.data) {
-    const addresses: Address[] = props.addressesHook.data.addresses
-    addressesAll = (addresses as BaseAddress[]).concat(...addresses.map((a) => a.rgContracts))
-    addressesAll.sort((a, b) => b.lockedGold - a.lockedGold)
-  }
+
   useEffect(() => {
     if (called || addressesAll.length === 0) {
       return
@@ -80,7 +116,7 @@ export default function RewardsTab(props: {
     fetchRewards({variables: {addresses: addressesToFetch}})
   }, [called, addressesAll, unchecked, fetchRewards])
 
-  const [ helpOpen, setHelpOpen ] = useState(false)
+  const [ helpOpen, setHelpOpen ] = useState(props.showHelp)
 
   const rewardsPerQ = new Map<string, EpochReward[]>()
   if (data) {
@@ -146,15 +182,13 @@ export default function RewardsTab(props: {
 
   return (
     <div>
-      {(props.addressesHook.networkStatus === NetworkStatus.loading || props.addressesHook.networkStatus === NetworkStatus.refetch) &&
-      <LinearProgress color="primary" />}
-      {addressesAll.length > 0 &&
       <div style={{display: "flex", flexDirection: "row"}}>
         <Table style={{width: 0}}>
           <TableHead>
             <TableRow>
               <TableCell size="small">address</TableCell>
-              <TableCell size="small" align="right" style={{whiteSpace: "nowrap"}}>locked CELO</TableCell>
+              {props.showLockedGold &&
+              <TableCell size="small" align="right" style={{whiteSpace: "nowrap"}}>locked CELO</TableCell>}
               <TableCell size="small"></TableCell>
             </TableRow>
           </TableHead>
@@ -162,7 +196,8 @@ export default function RewardsTab(props: {
             {addressesAll.map((a) =>
             <TableRow key={`row-${a.address}`}>
               <TableCell size="small"><AddressCell address={a.address} short /></TableCell>
-              <TableCell size="small" align="right">{(a.lockedGold / 1e18).toFixed(2)}</TableCell>
+              {props.showLockedGold &&
+              <TableCell size="small" align="right">{((a.lockedGold || 0) / 1e18).toFixed(2)}</TableCell>}
               <TableCell size="small">
                 <Checkbox
                   size="small"
@@ -201,20 +236,32 @@ export default function RewardsTab(props: {
             <IconButton onClick={() => { setHelpOpen(!helpOpen) }} size="small"><HelpOutlineIcon /></IconButton>
           </div>
           <Collapse in={helpOpen}>
-            <Typography variant="body2">
             <ul>
               <li>
+                <Typography variant="body2">
                 <LinkText
                   href="https://docs.celo.org/celo-codebase/protocol/proof-of-stake/epoch-rewards/locked-gold-rewards"
                   text="Rewards" /> for locked CELO holders are distributed every epoch and they compound automatically.
+                </Typography>
               </li>
-              <li>cUSD conversion is provided for accounting purposes only.</li>
-              <li>For distributions that happened before on-chain oracles were enabled, exchange rate of
-                1 CELO =&gt; 1 cUSD is used based on CoinList auction price.</li>
-              <li>For other distributions, CELO =&gt; cUSD exchange rate is based on on-chain exchange
-                rate when distribution was issued.</li>
+              <li>
+                <Typography variant="body2">
+                cUSD conversion is provided for accounting purposes only.
+                </Typography>
+              </li>
+              <li>
+                <Typography variant="body2">
+                For distributions that happened before on-chain oracles were enabled, exchange rate of
+                1 CELO =&gt; 1 cUSD is used based on CoinList auction price.
+                </Typography>
+              </li>
+              <li>
+                <Typography variant="body2">
+                For other distributions, CELO =&gt; cUSD exchange rate is based on on-chain exchange
+                rate when distribution was issued.
+                </Typography>
+              </li>
             </ul>
-            </Typography>
           </Collapse>
           {loading && <LinearProgress color="primary" />}
           {rewardsRows.length > 0 &&
@@ -233,7 +280,7 @@ export default function RewardsTab(props: {
           </Table>
           }
         </div>
-      </div>}
+      </div>
     </div>
   )
 }
