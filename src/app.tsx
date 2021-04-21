@@ -142,7 +142,7 @@ export default function App(props: {location: string}) {
           Celovote now works best with the <LinkText href="https://celoterminal.com" text="Celo Terminal" /> wallet.
           <br />
           Checkout updated step-by-step guides to self-custody and staking
-          in the <LinkText href="https://github.com/zviadm/celoterminal/wiki" text="Celo Terminal wiki" />.
+          in the <LinkText href="https://docs.celoterminal.com" text="Celo Terminal wiki" />.
         </Typography>
       </Box>
       <AppBar position="static" color="default">
