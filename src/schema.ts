@@ -25,6 +25,7 @@ type Query {
   targetAPY: Float!
   currentEpoch: Int!
   governanceProposals: GovernanceProposals!
+  savingsCELOTotalSupply: SavingsCELOTotalSupply!
 }
 
 type Mutation {
@@ -125,6 +126,11 @@ type EpochReward {
   asGold: Float!
   asUSD: Float!
 }
+
+type SavingsCELOTotalSupply {
+  celoWEI: String!
+  sceloWEI: String!
+}
 `
 
 export interface Address extends BaseAddress {
@@ -214,4 +220,9 @@ export interface EpochReward {
   epoch: number
   asGold: number
   asUSD: number
+}
+
+export interface SavingsCELOTotalSupply {
+  celoWEI: string
+  sceloWEI: string
 }
