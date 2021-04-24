@@ -11,7 +11,7 @@ export const celoURI = IsDev() ? "https://baklava-forno.celo-testnet.org" : (pro
 export const explorerURI = IsDev() ? "https://baklava-blockscout.celo-testnet.org" : "https://explorer.celo.org"
 export const celovoteGQL = IsDev() ? "http://localhost:4000" : "https://gql.celovote.com"
 
-export const minLockedGold = IsDev() ? new BigNumber(0.1e18) : new BigNumber(100e18)
+export const minLockedGold = IsDev() ? new BigNumber(0.1e18) : new BigNumber(10e18)
 export const electionMinVotes = new BigNumber(1500000e18)
 
 // GraphQL schema
