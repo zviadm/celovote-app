@@ -122,6 +122,11 @@ export default function Scores(props: {}) {
           may not be currently elected. However, each validator is included in calculation only for epochs were it was elected and
           had an actual epoch uptime score. Estimated APY does take Group&apos;s current slashing multiplier into account.
         </p>
+        <p>
+          As of 2021/05/09, estimated APY calculation takes <LinkText
+            href="https://github.com/celo-org/celo-proposals/blob/master/CIPs/cip-0029.md"
+            text="CIP-29" /> into account when calcuating uptime scores.
+        </p>
       </Typography>
 
       <div style={{display: "flex", flexDirection: "row", alignItems: "center", marginTop: 20}}>
