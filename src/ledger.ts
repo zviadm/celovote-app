@@ -17,16 +17,13 @@ export interface WalletAddress {
 }
 
 export async function connectTransport() {
-  // try {
-  const transport = await TransportU2F.create()
-  return transport
-  // } catch (e) {
-  //   if (window.USB && TransportUSB.isSupported()) {
-  //     const transport = await TransportUSB.create()
-  //     return transport
-  //   }
-  // }
-  // throw new Error(`Browser not supported. Use latest version of Chrome, Edge or Opera!`)
+  if (window.USB && TransportUSB.isSupported()) {
+    const transport = await TransportUSB.create()
+    return transport
+  } else {
+    const transport = await TransportU2F.create()
+    return transport
+  }
 }
 
 export function celoAddressPath(idx: number): string {
