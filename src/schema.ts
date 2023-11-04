@@ -7,7 +7,7 @@ export function IsDev() {
   return process.env.NODE_ENV === 'development'
 }
 
-export const celoURI = IsDev() ? "https://baklava-forno.celo-testnet.org" : (process.env.CELO_URI || "https://celorpc.celovote.com")
+export const celoURI = IsDev() ? "https://baklava-forno.celo-testnet.org" : (process.env.CELO_URI || "https://forno.celo.org")
 export const explorerURI = IsDev() ? "https://baklava-blockscout.celo-testnet.org" : "https://explorer.celo.org"
 export const celovoteGQL = IsDev() ? "http://localhost:4000" : "https://gql.celovote.com"
 
