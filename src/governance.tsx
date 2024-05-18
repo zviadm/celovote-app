@@ -128,10 +128,12 @@ export default function GovernanceTab(props: {
       if (idx === undefined) {
         continue
       }
-      if (a.authorized) {
-        authorizedAccounts.push({address: a.address, addressIdx: idx, rgContract: ""})
-        authorizedLockedGold += a.lockedGold
-      }
+      // NOTE: Due to changes in @celo/sdk celovote app can no longer vote for local accounts,
+      // use other apps, like Celo Terminal for it.
+      // if (a.authorized) {
+      //   authorizedAccounts.push({address: a.address, addressIdx: idx, rgContract: ""})
+      //   authorizedLockedGold += a.lockedGold
+      // }
       for (const rg of a.rgContracts) {
         if (rg.authorized) {
           authorizedAccounts.push({address: a.address, addressIdx: idx, rgContract: rg.address})
