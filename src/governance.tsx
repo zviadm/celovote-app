@@ -17,6 +17,7 @@ import AddressCell from './address-cell'
 import Link from '@material-ui/core/Link'
 import Box from '@material-ui/core/Box'
 import UnlockLedgerInfo from './unlock-ledger-info'
+import { keccak } from 'ethereumjs-util'
 
 import { WalletAddress, celoPathIdx, LedgerKit, useLedgerKit } from './ledger'
 import { EIP712TypedData, EIP712Object, generateTypedDataHash } from '@celo/contractkit/lib/utils/sign-typed-data-utils'
@@ -398,36 +399,16 @@ async function proxyGovernanceAction(
   const signedAtBlock = await kit.kit.web3.eth.getBlockNumber()
   const networkId = await kit.kit.web3.eth.net.getId()
   const message: ProxyGovernanceMessage = {
+    chainId: networkId,
     signedAtBlock: signedAtBlock,
     rgContract: account.rgContract,
     proposalId: proposalId,
     action: action,
   }
-  const data: EIP712TypedData = {
-    domain: {
-      name: "celovote.com",
-      version: "1",
-      chainId: networkId,
-    },
-    types: {
-      EIP712Domain: [
-        {name: "name", type: "string"},
-        {name: "version", type: "string"},
-        {name: "chainId", type: "uint256"},
-      ],
-      ProxyGovernance: [
-        {name: "signedAtBlock", type: "uint64"},
-        {name: "rgContract", type: "string"},
-        {name: "proposalId", type: "uint64"},
-        {name: "action", type: "string"}
-      ],
-    },
-    primaryType: "ProxyGovernance",
-    message: message as unknown as EIP712Object,
-  }
   setProgress(`Waiting for approval to proxy "${action}" on proposal ${proposalId} for ReleaseGold contract ${account.rgContract}...`)
-  const signature = await kit.wallet.signTypedData(account.address, data)
-  const encodedData = JSON.stringify(data)
+  const encodedData = JSON.stringify(message)
+  const hashAsHex = "0x" + (keccak(encodedData).toString("hex"))
+  const signature = await kit.wallet.signPersonalMessage(account.address, hashAsHex)
   setProgress(`Proxying "${action}" on proposal ${proposalId} for ReleaseGold contract ${account.rgContract}...`)
   await send(account.address, encodedData, signature)
 }

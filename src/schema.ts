@@ -185,6 +185,7 @@ export interface GroupEstimatedAPY {
 export type ProxyGovernanceAction = "upvote" | "revoke-upvote" | "vote-yes" | "vote-no" | "vote-abstain"
 
 export interface ProxyGovernanceMessage {
+  chainId: number
   signedAtBlock: number
   rgContract: string // if set, will proxy call on behalf of RGContract.
   proposalId: number
