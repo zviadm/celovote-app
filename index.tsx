@@ -14,23 +14,16 @@ import ApolloClient from 'apollo-boost';
 import { ApolloProvider } from '@apollo/react-hooks';
 import { celovoteGQL } from "./src/schema";
 
-const client = new ApolloClient({uri: celovoteGQL});
+const client = new ApolloClient({ uri: celovoteGQL });
 
 const Index = () => {
   return (
-    <ApolloProvider client={client}>
-      <Router>
-        <Switch>
-          <Route component={Faq} path="/faq" />
-          <Route component={Scores} path="/scores" />
-          <Route component={RewardsOnly} path="/rewards" />
-          <Route component={SavingsCELO} path="/savingscelo" />
-          <Route component={App} path="/" />
-        </Switch>
-      </Router>
-    </ApolloProvider>
+    <div>
+      <p>Celovote no longer exists, following decomissioning of all validator rewards on the Celo network.</p>
+      <a href="https://mondo.celo.org/governance/271">https://mondo.celo.org/governance/271</a>
+    </div>
   );
 }
 
 
-ReactDOM.render(<Index/>, document.getElementById('root'))
+ReactDOM.render(<Index />, document.getElementById('root'))
